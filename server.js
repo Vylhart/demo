@@ -1,8 +1,9 @@
-const express = require('express')
-const app     = express()
-const path    = require('path')
-const PORT    = process.env.PORT || 5000
-
+const express     = require('express')
+const app         = express()
+const path        = require('path')
+const PORT        = process.env.PORT || 5000
+const MongoClient = require('mongodb').MongoClient 
+const url = 'mongodb+srv://crimson:rust@cluster0-9gafz.mongodb.net/test?retryWrites=true&w=majority' 
 
 app
   .use(express.urlencoded({extended: true}))
@@ -13,3 +14,9 @@ app
       res.send("Hello")
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+
+MongoClient.connect(url, (e, db)=>{
+    console.log('Connected')
+    db.close()
+})
