@@ -1,8 +1,11 @@
-const express     = require('express')
-const app         = express()
 const path        = require('path')
 const PORT        = process.env.PORT || 5000
-const MongoClient = require('mongodb').MongoClient 
+const express     = require('express')
+const app         = express()
+const http        = require('http')
+const server      = http.Server(app)
+const socket      = require('socket.io')(server)
+const mongoClient = require('mongodb').MongoClient 
 const url = 'mongodb+srv://crimson:rust@cluster0-9gafz.mongodb.net/test?retryWrites=true&w=majority' 
 
 app
@@ -11,12 +14,25 @@ app
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => {
-      res.send("Hello")
+      res.render('pages/main')
   })
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+  .post('/chat', (req, res) =>{
+      //res.send(req.body)
+      res.render('pages/chat') 
+  })
 
+socket.on('connection', (soc)=>{
+    console.log('Connected to a Client')
+    soc
+        .on('transfer', (data)=>{
+            console.log(data);
+            soc.broadcast.emit('transfer', data)
+        }) 
+})
 
-MongoClient.connect(url, (e, db)=>{
-    console.log('Connected')
+mongoClient.connect(url, {useUnifiedTopology: true}, (e, db)=>{
+    console.log('Connected to Database')
     db.close()
 })
+
+server.listen(PORT, () => console.log(`Listening on ${ PORT }`))

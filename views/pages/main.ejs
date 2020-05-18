@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head><title>Main</title></head>
+    <body>
+        <div class="jumbotron">
+            <form id='form' action="/chat" method="POST">
+                <input type="text" placeholder="Enter user name" name='user' id="user">
+                <input type="text" placeholder="Enter room name" name='room'>
+                <input type="submit" value='Join'>
+            </form>
+        </div>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src ="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="client/main.js"></script>
+
+    </body>
+</html>
