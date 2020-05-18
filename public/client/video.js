@@ -3,7 +3,6 @@ var localVideo  = document.querySelector('#local')
 var remoteVideo = document.querySelector('#remote')
 var button      = document.querySelector('#get-access')
 var callButton  = document.querySelector('#call')
-const socket = io.connect(location.origin)
 
 
 var peerConnection
