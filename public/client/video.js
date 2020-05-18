@@ -3,6 +3,7 @@ var localVideo  = document.querySelector('#local')
 var remoteVideo = document.querySelector('#remote')
 var button      = document.querySelector('#get-access')
 var callButton  = document.querySelector('#call')
+const socket = io.connect(location.origin)
 
 
 var peerConnection
@@ -18,8 +19,6 @@ button.addEventListener('click', init)
 callButton.addEventListener('click', ()=>{start(true)})
 
 uuid = createUUID()
-const url    = location.origin
-const socket = io.connect(url)
 
 socket.on('data', (data)=>{
   console.log('got msg');
@@ -34,7 +33,7 @@ function init() {
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
      const videoTracks = stream.getVideoTracks()
      const track       = videoTracks[0]
-     alert(`Getting video from: ${track.label}`)
+     //alert(`Getting video from: ${track.label}`)
      localStream = (stream)
      localVideo.srcObject = stream
      console.log(typeof((localStream)));
