@@ -28,6 +28,9 @@ socket.on('connection', (soc)=>{
             console.log(data);
             soc.broadcast.emit('transfer', data)
         }) 
+        .on('data', (data)=>{
+            soc.to(roomName).emit('data', data)
+        })
 })
 
 mongoClient.connect(url, {useUnifiedTopology: true}, (e, db)=>{

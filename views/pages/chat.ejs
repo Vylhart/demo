@@ -2,20 +2,42 @@
 <html>
     <head><title>Chat</title></head>
     <body>
-        <div class="jumbotron">
-        <div class="bg-dark" style="clear: both">
-            <ul id=msgbox></ul>
-        </div>
-            <form id='form'>
-                <input id='msg' type="text" placeholder="Enter message">
-                <input type="submit" name='Send'>
-            </form>
-        </div>
+        <div class=" jumbotron container">
+            <div class="row">
+                <div class="col-6 figure">            
+                    <video  id   ='local'       autoplay muted></video>
+                </div>
+                <div class="col-6 figure">            
+                    <video  id   ='remote'      autoplay></video>
+                </div>            
+            </div>
+            <hr>
+            <div class="row form-inline">
+                    <button id   ="get-access" class="btn btn-primary">Get access to camera</button>
+                    <button id   ="call"       class="btn btn-success">Call</button>
+            </div>
+            <hr>
+    
+            <div class="row">
+                <ul id=msgbox></ul>
+            </div>
+            <div class="row">
+                <ul class="res col-md-6" style="overflow-y: auto; height: 200px;"></ul>
+            </div>
+            <div class="row form-inline">
+                <form id='form'>
+                        <input class="form-control" id='msg' type="text" placeholder="Enter message">
+                        <input class="form-control" type="submit" name='Send'>
+                </form>
+            </div>
+    </div>
+    
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src ="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="client/video.js"></script>
         <script src="client/chat.js"></script>
     </body>
 </html>
