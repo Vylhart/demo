@@ -33,7 +33,7 @@ function init() {
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
      const videoTracks = stream.getVideoTracks()
      const track       = videoTracks[0]
-     //alert(`Getting video from: ${track.label}`)
+     alert(`Getting video from: ${track.label}`)
      localStream = (stream)
      localVideo.srcObject = stream
      console.log(typeof((localStream)));
