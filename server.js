@@ -29,7 +29,7 @@ socket.on('connection', (soc)=>{
             soc.broadcast.emit('transfer', data)
         }) 
         .on('data', (data)=>{
-            soc.to(roomName).emit('data', data)
+            soc.broadcast.emit('data', data)
         })
 })
 
