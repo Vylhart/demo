@@ -24,12 +24,13 @@ app
 socket.on('connection', (soc)=>{
     console.log('Connected to a Client')
     soc
+        .join('room')
         .on('transfer', (data)=>{
             console.log(data);
             soc.broadcast.emit('transfer', data)
         }) 
         .on('data', (data)=>{
-            soc.broadcast.emit('data', data)
+            soc.to('room').emit('data', data)
         })
 })
 
