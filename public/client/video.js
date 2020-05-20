@@ -32,7 +32,6 @@ function init() {
       audio: true,
     };
     navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
-      alert('inside')
        const videoTracks = stream.getVideoTracks()
        const track       = videoTracks[0]
        alert(`Getting video from: ${track.label}`)
@@ -41,10 +40,9 @@ function init() {
        //console.log(typeof((localStream)));
        
     }).catch(errorHandler)
-    alert('init')
   }
   catch(e){
-    alert(e)
+    alert("Try https instead of http.")
   }
   
 }
@@ -110,6 +108,6 @@ function createUUID() {
 }
 
 function errorHandler(error) {
-  alert(error)
+  //alert(error)
   console.log(error);
 }
