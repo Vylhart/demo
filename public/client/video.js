@@ -26,12 +26,12 @@ socket.on('data', (data)=>{
 })
 
 function init() {
-  alert('init')
   var constraints = {
     video: true,
     audio: true,
   };
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
+    alert('inside')
      const videoTracks = stream.getVideoTracks()
      const track       = videoTracks[0]
      alert(`Getting video from: ${track.label}`)
@@ -40,6 +40,7 @@ function init() {
      //console.log(typeof((localStream)));
      
   }).catch(errorHandler)
+  alert('init')
 }
 
 function start(isCaller) {
