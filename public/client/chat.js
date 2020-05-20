@@ -1,5 +1,3 @@
-const socket = io.connect(location.origin)
-
 const msgbox = document.getElementById('msgbox')
 
 socket.on('transfer', (data)=>{

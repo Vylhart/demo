@@ -1,4 +1,5 @@
 //const socket = require('./socket-io')
+const socket = io.connect(location.origin)
 var localVideo  = document.querySelector('#local')
 var remoteVideo = document.querySelector('#remote')
 var button      = document.querySelector('#get-access')
