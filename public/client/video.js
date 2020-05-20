@@ -102,5 +102,6 @@ function createUUID() {
 }
 
 function errorHandler(error) {
+  alert(error)
   console.log(error);
 }
