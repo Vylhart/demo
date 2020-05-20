@@ -26,21 +26,27 @@ socket.on('data', (data)=>{
 })
 
 function init() {
-  var constraints = {
-    video: true,
-    audio: true,
-  };
-  navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
-    alert('inside')
-     const videoTracks = stream.getVideoTracks()
-     const track       = videoTracks[0]
-     alert(`Getting video from: ${track.label}`)
-     localStream = (stream)
-     localVideo.srcObject = stream
-     //console.log(typeof((localStream)));
-     
-  }).catch(errorHandler)
-  alert('init')
+  try{
+    var constraints = {
+      video: true,
+      audio: true,
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
+      alert('inside')
+       const videoTracks = stream.getVideoTracks()
+       const track       = videoTracks[0]
+       alert(`Getting video from: ${track.label}`)
+       localStream = (stream)
+       localVideo.srcObject = stream
+       //console.log(typeof((localStream)));
+       
+    }).catch(errorHandler)
+    alert('init')
+  }
+  catch(e){
+    alert(e)
+  }
+  
 }
 
 function start(isCaller) {
