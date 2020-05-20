@@ -26,6 +26,7 @@ socket.on('data', (data)=>{
 })
 
 function init() {
+  alert('init')
   var constraints = {
     video: true,
     audio: true,
