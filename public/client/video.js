@@ -37,7 +37,7 @@ function init() {
      alert(`Getting video from: ${track.label}`)
      localStream = (stream)
      localVideo.srcObject = stream
-     console.log(typeof((localStream)));
+     //console.log(typeof((localStream)));
      
   }).catch(errorHandler)
 }
