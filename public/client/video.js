@@ -6,6 +6,10 @@ var socketId;
 var localStream;
 var connections = [];
 
+console.log('9');
+
+
+
 var peerConnectionConfig = {
     'iceServers': [
         {'urls': 'stun:stun.services.mozilla.com'},
@@ -132,5 +136,7 @@ function gotMessageFromServer(fromId, message) {
         }                
     }
 }
+
+console.log('140');
 
 pageReady()
