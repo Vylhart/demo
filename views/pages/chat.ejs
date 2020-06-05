@@ -2,12 +2,21 @@
 <html>
     <head><title>Chat</title></head>
     <body>
-        <div class=" jumbotron container">
-            <div class="row">
-                <div class="col-6">            
+        <div class="container-fluid jumbotron">
+            <div class="row bg-primary">
+                <div class="videos">
+                    <div>
+                        <video id="localVideo" autoplay muted playsinline ></video>
+                        <!-- <div class="soundbar"><span class="currentVolume"></span></div> -->
+                    </div>
+                </div>
+                
+                <br />
+                <div id="connections"></div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">            
                     <video  id   ='local'   autoplay muted></video>
                 </div>
-                <div class="col-6">            
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">            
                     <video  id   ='remote'  autoplay></video>
                 </div>            
             </div>
@@ -18,9 +27,22 @@
             </div>
             <hr>
     
+
+
             <div class="row">
-                <ul id='msgbox'></ul>
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 container-fluid">
+                    <ul id='msgbox'></ul>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 bg-primary">
+                    <p id="count"></p>
+                    <ul id='userlist'></ul>
+                </div>
+
             </div>
+
+
+
+
             <div class="row form-inline">
                 <form id='form'>
                         <input class="form-control" id='msg' type="text" placeholder="Enter message">
@@ -36,5 +58,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="client/video.js"></script>
         <script src="client/chat.js"></script>
+        <script src="client/user.js"></script>
+
     </body>
 </html>

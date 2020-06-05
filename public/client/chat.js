@@ -1,5 +1,6 @@
 const msgbox = document.getElementById('msgbox')
 
+
 socket.on('transfer', (data)=>{
     console.log(data);
     let li    = document.createElement('span')
@@ -13,6 +14,7 @@ socket.on('transfer', (data)=>{
     msgbox.appendChild(li)
 
 })
+
 
 $(document).ready(()=>{  
     //alert(document.cookie)  
