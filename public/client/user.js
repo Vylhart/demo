@@ -15,17 +15,3 @@ socket.on('user-joined', (id, count)=>{
     
 })
 console.log('nope');
-
-socket.on('userjoined', (name)=>{
-    console.log('here');
-    
-    var li = document.createElement('li')
-    li.id = name
-    userlist.appendChild(li).append(name)
-})
-socket.on('userdisconnected', (name)=>{
-    console.log(name);
-    
-    var li = document.getElementById(name)
-    li.parentNode.removeChild(li)
-})
