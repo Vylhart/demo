@@ -32,7 +32,8 @@ function pageReady() {
                 socket.on('signal', gotMessageFromServer);    
 
                 socket.on('connect', function(){
-
+                    console.log('**************************');
+                    
                     socketId = socket.id;
 
                     socket.on('user-left', function(id){
@@ -42,7 +43,7 @@ function pageReady() {
                     });
 
 
-                    socket.on('user-joined', function(id, count, clients){
+                    socket.on('user-joinedd', function(id, count, clients){
                         console.log(typeof(clients));
                         
                         clients.forEach(function(socketListId) {
