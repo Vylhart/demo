@@ -43,6 +43,8 @@ function pageReady() {
 
 
                     socket.on('user-joined', function(id, count, clients){
+                        console.log(typeof(clients));
+                        
                         clients.forEach(function(socketListId) {
                             if(!connections[socketListId]){
                                 connections[socketListId] = new RTCPeerConnection(peerConnectionConfig);

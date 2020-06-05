@@ -39,7 +39,7 @@ socket.on('connection', (soc)=>{
         })
 
 
-    soc.emit("user-joined", soc.id, socket.engine.clientsCount, Object.keys(socket.sockets.clients().sockets));
+    soc.emit("user-joined", soc.id, socket.engine.clientsCount, Object.keys(socket.clients));
 
 	soc.on('signal', (toId, message) => {
 		soc.to(toId).emit('signal', soc.id, message);
