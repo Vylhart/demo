@@ -1,142 +1,113 @@
-socket = io.connect(location.origin, {secure: true});
-var localVideo;
-var firstPerson = false;
-var socketCount = 0;
-var socketId;
-var localStream;
-var connections = [];
-
-console.log('9');
+//const socket = require('./socket-io')
+const socket = io.connect(location.origin)
+var localVideo  = document.querySelector('#local')
+var remoteVideo = document.querySelector('#remote')
+var button      = document.querySelector('#get-access')
+var callButton  = document.querySelector('#call')
 
 
+var peerConnection
+var uuid
+var localStream
+const peerConnectionConfig = {
+  'iceServers': [
+    {'urls': 'stun:stun.stunprotocol.org:3478'},
+    {'urls': 'stun:stun.l.google.com:19302'},
+  ]
+}
+button.addEventListener('click', init)
+callButton.addEventListener('click', ()=>{start(true)})
 
-var peerConnectionConfig = {
-    'iceServers': [
-        {'urls': 'stun:stun.services.mozilla.com'},
-        {'urls': 'stun:stun.l.google.com:19302'},
-    ]
-};
+uuid = createUUID()
 
-function pageReady() {
+socket.on('data', (data)=>{
+  console.log('got msg');
+  gotMessageFromServer(data)
+})
 
-    localVideo = document.getElementById('localVideo');
-    remoteVideo = document.getElementById('remoteVideo');
-
+function init() {
+  try{
     var constraints = {
-        video: true,
-        audio: false,
+      video: true,
+      audio: true,
     };
-
-    if(navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia(constraints)
-            .then(getUserMediaSuccess)
-            .then(function(){
-
-                
-                socket.on('signal', gotMessageFromServer);    
-
-                socket.on('connect', function(){
-                    console.log('**************************');
-                    
-                    socketId = socket.id;
-
-                    socket.on('user-left', function(id){
-                        var video = document.querySelector('[data-socket="'+ id +'"]');
-                        var parentDiv = video.parentElement;
-                        video.parentElement.parentElement.removeChild(parentDiv);
-                    });
-
-
-                    socket.on('user-joinedd', function(id, count, clients){
-                        console.log(typeof(clients));
-                        
-                        clients.forEach(function(socketListId) {
-                            if(!connections[socketListId]){
-                                connections[socketListId] = new RTCPeerConnection(peerConnectionConfig);
-                                //Wait for their ice candidate       
-                                connections[socketListId].onicecandidate = function(){
-                                    if(event.candidate != null) {
-                                        console.log('SENDING ICE');
-                                        socket.emit('signal', socketListId, JSON.stringify({'ice': event.candidate}));
-                                    }
-                                }
-
-                                //Wait for their video stream
-                                connections[socketListId].onaddstream = function(){
-                                    gotRemoteStream(event, socketListId)
-                                }    
-
-                                //Add the local video stream
-                                connections[socketListId].addStream(localStream);                                                                
-                            }
-                        });
-
-                        //Create an offer to connect with your local description
-                        
-                        if(count >= 2){
-                            connections[id].createOffer().then(function(description){
-                                connections[id].setLocalDescription(description).then(function() {
-                                    // console.log(connections);
-                                    socket.emit('signal', id, JSON.stringify({'sdp': connections[id].localDescription}));
-                                }).catch(e => console.log(e));        
-                            });
-                        }
-                    });                    
-                })       
-        
-            }); 
-    } else {
-        alert('Your browser does not support getUserMedia API');
-    } 
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
+       const videoTracks = stream.getVideoTracks()
+       const track       = videoTracks[0]
+       alert(`Getting video from: ${track.label}`)
+       localStream = (stream)
+       localVideo.srcObject = stream
+       //console.log(typeof((localStream)));
+       
+    }).catch(errorHandler)
+  }
+  catch(e){
+    alert("Try https instead of http.")
+  }
+  
 }
 
-function getUserMediaSuccess(stream) {
-    localStream = stream;
-    localVideo.srcObject = stream;
+function start(isCaller) {
+  peerConnection = new RTCPeerConnection(peerConnectionConfig);
+  peerConnection.onicecandidate = gotIceCandidate;
+  peerConnection.ontrack = gotRemoteStream;
+  console.log(localStream);
+  
+  peerConnection.addStream(localStream);
+
+  if(isCaller) {
+    peerConnection.createOffer().then(createdDescription).catch(errorHandler);
+  }
 }
 
-function gotRemoteStream(event, id) {
+function gotMessageFromServer(message) {
+  if(!peerConnection) start(false);
+  console.log(message)
+  
+  
+  var signal = JSON.parse(message);
+  // Ignore messages from ourself
+  if(signal.uuid == uuid) return;
 
-    var videos = document.querySelectorAll('video'),
-        video  = document.createElement('video'),
-        div    = document.createElement('div')
-
-    video.setAttribute('data-socket', id);
-    video.srcObject         = (event.stream);
-    video.autoplay    = true; 
-    video.muted       = true;
-    video.playsinline = true;
-    
-    div.appendChild(video);      
-    document.querySelector('.videos').appendChild(div);      
+  if(signal.sdp) {
+    peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {
+      // Only create answers in response to offers
+      if(signal.sdp.type == 'offer') {
+        peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
+      }
+    }).catch(errorHandler);
+  } else if(signal.ice) {
+    peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+  }
 }
 
-function gotMessageFromServer(fromId, message) {
-
-    //Parse the incoming signal
-    var signal = JSON.parse(message)
-
-    //Make sure it's not coming from yourself
-    if(fromId != socketId) {
-
-        if(signal.sdp){            
-            connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {                
-                if(signal.sdp.type == 'offer') {
-                    connections[fromId].createAnswer().then(function(description){
-                        connections[fromId].setLocalDescription(description).then(function() {
-                            socket.emit('signal', fromId, JSON.stringify({'sdp': connections[fromId].localDescription}));
-                        }).catch(e => console.log(e));        
-                    }).catch(e => console.log(e));
-                }
-            }).catch(e => console.log(e));
-        }
-    
-        if(signal.ice) {
-            connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e => console.log(e));
-        }                
-    }
+function gotIceCandidate(event) {
+  if(event.candidate != null) {
+    console.log('gotIce');
+    socket.emit('data', JSON.stringify({'ice': event.candidate, 'uuid': uuid}))
+  }
 }
 
-console.log('140');
+function createdDescription(description) {
+  console.log('got description');
+  peerConnection.setLocalDescription(description).then(function() {
+    socket.emit('data',JSON.stringify({'sdp': peerConnection.localDescription, 'uuid': uuid}));
+  }).catch(errorHandler);
+}
 
-pageReady()
+function gotRemoteStream(event) {
+  console.log('got remote stream');
+  remoteVideo.srcObject = event.streams[0];
+}
+
+function createUUID() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+function errorHandler(error) {
+  //alert(error)
+  console.log(error);
+}
